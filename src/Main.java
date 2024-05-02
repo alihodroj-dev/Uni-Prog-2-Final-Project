@@ -4,7 +4,7 @@ public class Main {
         data.loadData();
         data.saveData();
 
-        for(Student s : data.getStudents()) {
+        /*for(Student s : data.getStudents()) {
             System.out.println(s.getUsername());
             for(Class c : s.getClassesEnrolledIn()) {
                 for(Question q : c.getQuiz().getQuestions()) {
@@ -14,7 +14,13 @@ public class Main {
                     }
                 }
             }
-        }
+        }*/
+
+
+        Student s = new Student();
+        s = data.getStudents().getFirst();
+        s.loadMainMenu();
+
 
     }
 }
