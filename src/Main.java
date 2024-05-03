@@ -17,9 +17,9 @@ public class Main {
         }*/
 
 
-        Student s = new Student();
-        s = data.getStudents().getFirst();
-        s.loadMainMenu();
+        Instructor i = new Instructor();
+        i = data.getInstructors().getFirst();
+        i.loadMainMenu();
 
 
     }

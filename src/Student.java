@@ -63,21 +63,22 @@ public class Student {
         this.finalGrade = finalGrade;
     }
 
-    // Displays
-    public void DisplayAccountInformation() {
+    // DISPLAYS
+
+    public void displayAccountInformation() {
         System.out.print("username : " + this.username +
                 "\npassword : " + this.password + "\n"
         );
     }
 
-    public void DisplayClassesEnrolledIn() {
+    public void displayClassesEnrolledIn() {
         System.out.println(); // empty line
         for (int i = 0; i < classesEnrolledIn.toArray().length; i++)
             System.out.print("( " + (i + 1) + " ) " + classesEnrolledIn.get(i).getClassId() + "\n");
         System.out.println();
     }
 
-    // Menus
+    // MENUS
 
     // Main Menu
     public void loadMainMenu() {
@@ -100,14 +101,14 @@ public class Student {
             Data data = new Data();
             switch (choice) {
                 case 1:
-                    DisplayAccountInformation();
+                    displayAccountInformation();
                     break;
                 case 2:
 
                     loadAccountMenu(data);
                     break;
                 case 3:
-                    DisplayClassesEnrolledIn();
+                    displayClassesEnrolledIn();
                     break;
                 case 4:
                     // Additional functionality can be placed here
@@ -183,7 +184,7 @@ public class Student {
                 data.getStudents().get(index).setPassword(this.password);
 
                 System.out.println("Updated Account Information:\n");
-                DisplayAccountInformation();
+                displayAccountInformation();
             }
 
             // Saving Changes
@@ -200,55 +201,65 @@ public class Student {
 
         int classChoice;
         System.out.println("Pick a class : ");
-        DisplayClassesEnrolledIn();
+        displayClassesEnrolledIn();
         System.out.println("( " + ((classesEnrolledIn.toArray().length) + 1) + " ) Go Back");
         System.out.print("Enter your choice : ");
         classChoice = sc.nextInt() - 1; // decrementing to actual arraylist index
         sc.nextLine(); // clearing line
-        if(classChoice == ((classesEnrolledIn.toArray().length) + 1)) loadMainMenu();
+        if(classChoice == ((classesEnrolledIn.toArray().length))) loadMainMenu();
         else loadTestTakerMenu(classChoice , data);
 
     }
+    // Test Taker Menu
     public void loadTestTakerMenu(int classChoice , Data data) {
         Class c = new Class("");
         c = classesEnrolledIn.get(classChoice);
         int choice;
-        System.out.println("Class : " + c.getClassId());
-        System.out.print("Quiz : ");
-        if(c.getIsQuizSet()) System.out.print("Available\n");
-        else System.out.print("Not Available\n");
 
-        System.out.print("Midterm : ");
-        if(c.getIsMidtermSet()) System.out.print("Available\n");
-        else System.out.print("Not Available\n");
+        do {
+            System.out.println("Class : " + c.getClassId());
+            System.out.print("Quiz : ");
+            if (c.getIsQuizSet()) System.out.print("Available\n");
+            else System.out.print("Not Available\n");
 
-        System.out.print("Final : ");
-        if(c.getIsFinalSet()) System.out.print("Available\n");
-        else System.out.print("Not Available\n");
+            System.out.print("Midterm : ");
+            if (c.getIsMidtermSet()) System.out.print("Available\n");
+            else System.out.print("Not Available\n");
 
-        System.out.println("( 1 ) Take Quiz\n" +
-                "( 2 ) Take Midterm\n" +
-                "( 3 ) Take Final\n"  +
-                "( 4 ) Go Back\n" +
-                "Enter your choice : "
-        );
-        choice = sc.nextInt();
-        sc.nextLine();
+            System.out.print("Final : ");
+            if (c.getIsFinalSet()) System.out.print("Available\n");
+            else System.out.print("Not Available\n");
 
-        switch (choice) {
-            case  1:
-                // Start Quiz
-                break;
-            case 2:
-                // Start Midterm
-                break;
-            case 3:
-                // Start final
-                break;
-            case 4:
-                // go back to navigator menu
-        }
+            System.out.println("( 1 ) Take Quiz\n" +
+                    "( 2 ) Take Midterm\n" +
+                    "( 3 ) Take Final\n" +
+                    "( 4 ) Go Back\n" +
+                    "Enter your choice : "
+            );
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    // Start Quiz
+                    break;
+                case 2:
+                    // Start Midterm
+                    break;
+                case 3:
+                    // Start final
+                    break;
+                case 4:
+                    // go back to navigator menu
+                    break;
+                default:
+                    System.out.println("Invalid Choice!");
+                    break;
+            }
+        }while(choice != 4);
     }
+
+
 
     // Searches
 
