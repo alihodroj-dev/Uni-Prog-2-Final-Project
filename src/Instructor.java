@@ -122,9 +122,11 @@ public class Instructor {
                         newUsername = sc.nextLine();
                         if (newUsername.isEmpty())
                             System.out.print("Username field is required!\n");
+                        else if(isUsernameTaken(newUsername , data))
+                            System.out.print("Username is already in use!\n");
                         else
                             setUsername(newUsername);
-                    } while (newUsername.isEmpty());
+                    } while (newUsername.isEmpty() || isUsernameTaken(newUsername , data));
                     break;
                 case 2:
                     String newPassword;
@@ -235,5 +237,13 @@ public class Instructor {
             if (data.getInstructors().get(i).username.equals(this.username))
                 return i;
         return -1; // Return -1 if not found
+    }
+
+    // BOOLEANS
+    public boolean isUsernameTaken(String u, Data data) {
+        for(Instructor i : data.getInstructors()) {
+            if( u.equalsIgnoreCase(i.username) ) return true;
+        }
+        return  false;
     }
 }

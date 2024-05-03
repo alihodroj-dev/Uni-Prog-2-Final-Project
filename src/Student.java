@@ -154,9 +154,12 @@ public class Student {
                         newUsername = sc.nextLine();
                         if (newUsername.isEmpty())
                             System.out.print("Username field is required!\n");
+                        else if(isUsernameTaken(newUsername , data))
+                            System.out.print("Username is already taken!\n");
                         else
                             setUsername(newUsername);
-                    } while (newUsername.isEmpty());
+
+                    } while (newUsername.isEmpty() || isUsernameTaken(newUsername , data));
 
                     break;
                 case 2:
@@ -270,5 +273,13 @@ public class Student {
             if (data.getStudents().get(i).username.equals(this.username))
                 index = i;
         return index;
+    }
+
+    // Booleans
+    public boolean isUsernameTaken(String s, Data data) {
+        for(Student student : data.getStudents()) {
+           if( s.equalsIgnoreCase(student.username) ) return true;
+        }
+        return  false;
     }
 }
