@@ -1,5 +1,5 @@
 public class Quiz extends Test {
-    public Quiz() {
-        super('Q', 20, 5);
+    public Quiz(String testId, String testPassword, char testType, String testName) {
+        super(testId, testPassword, testName, testType);
     }
 }

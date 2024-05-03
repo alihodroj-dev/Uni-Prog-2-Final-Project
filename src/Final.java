@@ -1,6 +1,6 @@
 public class Final extends Test {
 
-    public Final() {
-        super('F', 45, 20);
+    public Final(String testId, String testPassword, char testType, String testName) {
+        super(testId, testPassword, testName, testType);
     }
 }

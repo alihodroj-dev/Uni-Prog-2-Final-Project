@@ -1,6 +1,6 @@
 public class Midterm extends Test {
 
-    public Midterm() {
-        super('M', 35, 10);
+    public Midterm(String testId, String testPassword, char testType, String testName) {
+        super(testId, testPassword, testName, testType);
     }
 }

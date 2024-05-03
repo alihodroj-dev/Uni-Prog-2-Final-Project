@@ -16,7 +16,7 @@ public class FileWorker {
             }
             reader.close();
         } catch (FileNotFoundException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         return output;
     }
@@ -27,7 +27,7 @@ public class FileWorker {
             fileWriter.write(data);
             fileWriter.close();
         } catch(IOException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
     }
 }

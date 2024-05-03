@@ -1,46 +1,60 @@
 import java.util.ArrayList;
 
 public abstract class Test {
+    private String testName;
+    private String testId;
+    private String testPassword;
     private char testType;
     private int percentage;
     private int numberOfQuestions;
-
     private ArrayList<Question> questions = new ArrayList<Question>();
 
-    public Test(char testType, int percentage, int numberOfQuestions) {
+    // Constructor
+    public Test(String testId, String testPassword, String testName, char testType) {
+        this.testName = testName;
+        this.testId = testId;
+        this.testPassword = testPassword;
         this.testType = testType;
-        this.percentage = percentage;
-        this.numberOfQuestions = numberOfQuestions;
+        switch (this.testType) {
+            case 'Q':
+                this.percentage = 20;
+                this.numberOfQuestions = 5;
+                break;
+            case 'M':
+                this.percentage = 35;
+                this.numberOfQuestions = 10;
+                break;
+            case 'F':
+                this.percentage = 45;
+                this.numberOfQuestions = 15;
+                break;
+        }
     }
 
+    // GETTERS
+    public String getTestName() {
+        return testName;
+    }
+    public String getTestId() {
+        return testId;
+    }
+    public String getTestPassword() {
+        return testPassword;
+    }
     public char getTestType() {
         return testType;
     }
-
-    public void setTestType(char testType) {
-        this.testType = testType;
-    }
-
     public int getPercentage() {
         return percentage;
     }
-
-    public void setPercentage(int percentage) {
-        this.percentage = percentage;
-    }
-
     public int getNumberOfQuestions() {
         return numberOfQuestions;
     }
-
-    public void setNumberOfQuestions(int numberOfQuestions) {
-        this.numberOfQuestions = numberOfQuestions;
-    }
-
     public ArrayList<Question> getQuestions() {
         return questions;
     }
 
+    // SETTERS
     public void setQuestions(ArrayList<Question> questions) {
         this.questions = questions;
     }
