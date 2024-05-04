@@ -1,3 +1,5 @@
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Data {
@@ -12,7 +14,9 @@ public class Data {
         this.loadTests();
     }
     public void saveData() {
-
+        this.saveUsers();
+        this.saveGrades();
+        this.saveTests();
     }
 
     // HELPER METHODS
@@ -97,6 +101,148 @@ public class Data {
             }
         }
     }
+    private void saveUsers() {
+        // saving students
+        // file data to be written
+        String studentsFileData = "";
+        // looping over students
+        for(Student s : this.students) {
+            // line data
+            String data = "";
+            // adding username
+            data += s.getUsername() + ";";
+            // adding password
+            data += s.getPassword();
+            // adding data to file data
+            studentsFileData += data;
+            // checking if last to avoid empty line at the end
+            if(!((this.students.indexOf(s) + 1 ) == students.size())) {
+                studentsFileData += "\n";
+            }
+        }
+
+        // saving instructors
+        // file data to be written
+        String instructorsFileData = "";
+        // looping over instructors
+        for(Instructor i : this.instructors) {
+            // line data
+            String data = "";
+            // adding username
+            data += i.getUsername() + ";";
+            // adding password
+            data += i.getPassword();
+            // adding data to file data
+            instructorsFileData += data;
+            // checking if last to avoid empty line at the end
+            if(!((this.instructors.indexOf(i) + 1 ) == instructors.size())) {
+                instructorsFileData += "\n";
+            }
+        }
+
+        try {
+            FileWriter fileWriter1 = new FileWriter("Data/Users/Students.txt");
+            FileWriter fileWriter2 = new FileWriter("Data/Users/Instructors.txt");
+            fileWriter1.write(studentsFileData);
+            fileWriter2.write(instructorsFileData);
+            fileWriter1.close();
+            fileWriter2.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private void saveGrades() {
+        // path
+        String path = "Data/Grades/";
+        // looping over students
+        for(Student s : this.students) {
+            // file data to be written
+            String fileData = "";
+            for(StudentGrade g : s.getGrades()) {
+                // line data
+                String data = "";
+                // adding test id
+                data += g.getTestId() + ";";
+                // adding date taken
+                data += g.getDateTaken() + ";";
+                // adding grade
+                data += g.getGrade();
+                // checking if last to avoid empty line at the end
+                if(!((s.getGrades().indexOf(g) + 1 ) == s.getGrades().size())) {
+                    data += "\n";
+                }
+                fileData += data;
+            }
+
+            try {
+                FileWriter fileWriter = new FileWriter(path + s.getUsername() + ".txt");
+                fileWriter.write(fileData);
+                fileWriter.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+    private void saveTests() {
+        // path
+        String path = "Data/Tests/";
+        // all current test file data
+        String allCurrentTestsFileData = "";
+        // looping over tests
+        for(Test t : this.tests) {
+            // adding test id
+            allCurrentTestsFileData += t.getTestId() + ";";
+            // adding test password
+            allCurrentTestsFileData += t.getTestPassword() + ";";
+            // adding test name
+            allCurrentTestsFileData += t.getTestName() + ";";
+            // adding test type
+            allCurrentTestsFileData += t.getTestType();
+            // checking if last to avoid empty line at the end
+            if(!((this.tests.indexOf(t) + 1 ) == this.tests.size())) {
+                allCurrentTestsFileData += "\n";
+            }
+
+            // current test file data
+            String fileData = "";
+            for(Question q : t.getQuestions()) {
+                // line data
+                String data = "";
+                // adding desc
+                data += q.getDescription() + ";";
+                // adding options
+                for(String o : q.getOptions()) {
+                    data += o + ";";
+                }
+                // adding correct answer index
+                data += q.getCorrectAnswerIndex();
+                // checking if last to avoid empty line at the end
+                if(!((t.getQuestions().indexOf(q) + 1 ) == t.getQuestions().size())) {
+                    data += "\n";
+                }
+                // adding question
+                fileData += data;
+            }
+
+            // writing each test file
+            try {
+                FileWriter fileWriter = new FileWriter(path + t.getTestId() + ".txt");
+                fileWriter.write(fileData);
+                fileWriter.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+        // writing all current tests file
+        try {
+            FileWriter fileWriter1 = new FileWriter(path + "AllCurrentTests.txt");
+            fileWriter1.write(allCurrentTestsFileData);
+            fileWriter1.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     // GETTERS
     public ArrayList<Student> getStudents() {
@@ -104,5 +250,8 @@ public class Data {
     }
     public ArrayList<Instructor> getInstructors() {
         return instructors;
+    }
+    public ArrayList<Test> getTests() {
+        return tests;
     }
 }
