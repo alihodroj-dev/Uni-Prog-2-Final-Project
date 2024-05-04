@@ -20,4 +20,12 @@ public class StudentGrade {
     public double getGrade() {
         return grade;
     }
+
+
+    @Override
+    public  String toString() {
+        return "id : " + testId +
+                "\nDate taken : " + dateTaken +
+                "\nGrade : " + grade;
+    }
 }

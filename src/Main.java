@@ -2,11 +2,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
         // creating initial data model
         Data data = new Data();
         // loading data
         data.loadData();
-
+        /*
         // Authentication loop
         Scanner sc = new Scanner(System.in);
         int input = 0;
@@ -83,5 +84,16 @@ public class Main {
                     break;
             }
         } while(input != 3);
+
+         */
+        Student s = new Student("" , "");
+        s = data.getStudents().getFirst();
+        s.loadMainMenu();
+
+        /* Instructor i = new Instructor("" , "");
+         i = data.getInstructors().getFirst();
+         i.loadMainMenu();
+
+         */
     }
 }
