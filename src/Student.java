@@ -132,7 +132,7 @@ public class Student {
         String newName;
 
         do {
-            System.out.print("NEW " + str + " NAME : ");
+            System.out.print("NEW " + str.toUpperCase() + " NAME : ");
             newName = sc.nextLine();
             displayDottedLine();
 
@@ -237,7 +237,6 @@ public class Student {
 
     // Displays Academic Records
     private  void displayAcademicRecords(Data data) {
-        data.loadData();
         String tempTitle="";
         System.out.println("Displaying All Taken tests...\n");
         for(int i=0 ; i < grades.size() ; i++) {

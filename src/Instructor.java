@@ -113,7 +113,7 @@ public class Instructor {
         String name;
 
         do {
-            System.out.print("Enter your " + str + " Name: ");
+            System.out.print("NEW " + str.toUpperCase() + " NAME : ");
             name = sc.nextLine();
             displayDottedLine();
 
@@ -153,7 +153,7 @@ public class Instructor {
         int attempts = 3;
 
         do {
-            System.out.print("Enter your new password: ");
+            System.out.print("NEW PASSWORD: ");
             newPassword = sc.nextLine();
             displayDottedLine();
             if (newPassword.length() < MINLENGTH) {
@@ -166,7 +166,7 @@ public class Instructor {
         } while (newPassword.length() < MINLENGTH || newPassword.length() > MAXLENGTH);
 
         do {
-            System.out.print("Confirm password: ");
+            System.out.print("CONFIRM PASSWORD: ");
             confirmPassword = sc.nextLine();
             displayDottedLine();
 
