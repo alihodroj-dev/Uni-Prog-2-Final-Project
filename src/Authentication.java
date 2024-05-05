@@ -42,7 +42,7 @@ public abstract class Authentication {
                 // stopping loop
                 loggedIn = true;
                 // loading student menu
-                currentUser.loadMainMenu();
+                currentUser.loadMainMenu(dataModel);
             } else {
                 // looping back to start
                 System.out.println("Login failed, try again!");
@@ -90,7 +90,7 @@ public abstract class Authentication {
                 // stopping loop
                 loggedIn = true;
                 // loading instructor menu
-                currentUser.loadMainMenu();
+                currentUser.loadMainMenu(dataModel);
             } else {
                 // looping back to start
                 System.out.println("Login failed, try again!");
@@ -170,7 +170,7 @@ public abstract class Authentication {
                 displayDottedLines();
                 userCreated = true;
                 // starting main menu
-                s.loadMainMenu();
+                s.loadMainMenu(dataModel);
             } else {
                 System.out.println("Failed to create STUDENT, try again.");
                 if (!checkIfStudentUsernameUnique(username, dataModel)) {
@@ -252,7 +252,7 @@ public abstract class Authentication {
                 displayDottedLines();
                 userCreated = true;
                 // starting main menu
-                i.loadMainMenu();
+                i.loadMainMenu(dataModel);
             } else {
                 System.out.println("Failed to create INSTRUCTOR, try again.");
                 if (!checkIfStudentUsernameUnique(username, dataModel)) {

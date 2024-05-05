@@ -22,19 +22,11 @@ public class Instructor {
         return password;
     }
 
-    // Displays account information
-    private void displayAccountInformation() {
-        String[] temp = this.username.split("_");
-        System.out.println(
-                "First Name: " + temp[0] +
-                        "\nLast Name: " + temp[1] +
-                        "\nPassword: " + this.password
-        );
-    }
+
+    // MENUS
 
     // Main menu handling
-    public void loadMainMenu() {
-        Data data = new Data();
+    public void loadMainMenu(Data data) {
         int choice;
         String[] temp = this.username.split("_");
 
@@ -42,15 +34,16 @@ public class Instructor {
 
         do {
             System.out.print(
-                    "(1) Display Account Information\n" +
-                            "(2) Edit Account Information\n" +
-                            "(3) Create test\n" +
-                            "(4) Logout\n" +
-                            "Enter your choice (1 - 4): "
+                    " 1) Display Account Information\n" +
+                            " 2) Edit Account Information\n" +
+                            " 3) Create test\n" +
+                            " 4) Logout\n" +
+                            "CHOICE (1 - 4): "
             );
 
             choice = sc.nextInt();
             sc.nextLine(); // Clearing buffer after input
+            displayDottedLine();
 
             switch (choice) {
                 case 1:
@@ -66,24 +59,27 @@ public class Instructor {
                     System.out.println("Invalid Choice!");
             }
         } while (choice != 4);
+        data.saveData(); // Saving data in case of any changes
+        System.out.println("Logging you out...");
     }
 
     // Menu for account editing
     private void loadAccountMenu(Data data) {
-        data.loadData();
+
         int mainChoice;
 
         do {
             System.out.print(
-                    "(1) Edit First Name\n" +
-                            "(2) Edit Last Name\n" +
-                            "(3) Edit Password\n" +
-                            "(4) Go Back\n" +
-                            "Enter your choice (1 - 4): "
+                    " 1) Edit First Name\n" +
+                            " 2) Edit Last Name\n" +
+                            " 3) Edit Password\n" +
+                            " 4) Go Back\n" +
+                            "CHOICE (1 - 4): "
             );
 
             mainChoice = sc.nextInt();
             sc.nextLine(); // Clearing buffer after input
+            displayDottedLine();
 
             switch (mainChoice) {
                 case 1, 2:
@@ -100,9 +96,14 @@ public class Instructor {
             }
         } while (mainChoice != 4);
 
-        data.saveData(); // Saving data in case of any changes
-        loadMainMenu(); // Loading main menu
+
+        loadMainMenu(data); // Loading main menu
     }
+
+
+
+    // UPDATES
+
 
     // Updates the name based on user selection
     private void updateName(Data data, int choice) {
@@ -113,7 +114,11 @@ public class Instructor {
 
         do {
             System.out.print("Enter your " + str + " Name: ");
-            name = sc.nextLine().replaceAll(" ", "");
+            name = sc.nextLine();
+            displayDottedLine();
+
+            // Removing Spaces , if Any
+            name = name.replaceAll(" " , "");
 
             if (name.isEmpty()) {
                 System.out.println(str + " Name Field is Required... No Changes were made!");
@@ -129,11 +134,13 @@ public class Instructor {
         if (index != -1) {
             Random rand = new Random();
 
+            String newUsername;
             do {
-                this.username = (choice == 1) ? name + "_" + temp[1] : temp[0] + "_" + name;
-                this.username += "_" + rand.nextInt(1000, 10000);
-            } while (isTaken(username, data));
+                newUsername = (choice == 1) ? name + "_" + temp[1] : temp[0] + "_" + name;
+                newUsername += "_" + rand.nextInt(1000, 10000);
+            } while (isTaken(newUsername, data));
 
+            this.username = newUsername;
             data.getInstructors().get(index).username = this.username;
             System.out.println(str + " Name was Successfully Modified");
         }
@@ -148,7 +155,7 @@ public class Instructor {
         do {
             System.out.print("Enter your new password: ");
             newPassword = sc.nextLine();
-
+            displayDottedLine();
             if (newPassword.length() < MINLENGTH) {
                 System.out.println("The password should have at least " + MINLENGTH + " characters, please try again");
             }
@@ -161,6 +168,7 @@ public class Instructor {
         do {
             System.out.print("Confirm password: ");
             confirmPassword = sc.nextLine();
+            displayDottedLine();
 
             if (!confirmPassword.equals(newPassword) && attempts != 0) {
                 attempts--;
@@ -183,6 +191,27 @@ public class Instructor {
         loadAccountMenu(data);
     }
 
+
+
+
+    // DISPLAYS
+
+    // Displays account information
+    private void displayAccountInformation() {
+        String[] temp = this.username.split("_");
+        System.out.println(
+                "First Name: " + temp[0] +
+                        "\nLast Name: " + temp[1] +
+                        "\nPassword: " + this.password
+        );
+    }
+
+
+
+
+    // HELPER METHODS
+
+
     // Helper method to find instructor index
     private int instructorIndexFinder(String u, Data data) {
         for (int i = 0; i < data.getInstructors().size(); i++) {
@@ -197,5 +226,9 @@ public class Instructor {
             if (i.username.equalsIgnoreCase(username)) return true;
         }
         return false;
+    }
+
+    private static void displayDottedLine() {
+        System.out.println("********************************************");
     }
 }
