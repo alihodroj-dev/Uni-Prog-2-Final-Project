@@ -119,7 +119,7 @@ public class Student {
             }
         } while (mainChoice != 4);
 
-        loadMainMenu(data); // Loading Main menu
+
     }
 
     // UPDATES
@@ -169,7 +169,8 @@ public class Student {
             data.getStudents().get(index).username = this.username;
             renameGradeFile(oldUsername, username);
             System.out.println(str + " Name was Successfully Modified");
-            loadAccountMenu(data);
+            System.out.println("Your new username is : "+ username);
+
         }
     }
 
@@ -216,7 +217,6 @@ public class Student {
             System.out.println("Password was Successfully modified");
         }
 
-        loadAccountMenu(data);
     }
 
 
@@ -227,6 +227,7 @@ public class Student {
         String[] temp = this.username.split("_");
 
         System.out.println(
+                " Username : " + username +
                 " First Name: " + temp[0] +
                         "\n Last Name: " + temp[1] +
                         "\n Password: " + this.password

@@ -9,6 +9,7 @@ public class Main {
         // Authentication loop
         Scanner sc = new Scanner(System.in);
         int input = 0;
+
         // Main menu loop
         do {
             // display message
