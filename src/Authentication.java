@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -259,6 +260,30 @@ public abstract class Authentication {
             }
         } while (!userCreated);
     }
+    public static boolean checkRememberMe() {
+        // contents of remember me file
+        ArrayList<String> rememberMeContent = FileWorker.readFile("Data/Users/RememberMe.txt");
+        // checking if it is empty
+        return !rememberMeContent.isEmpty();
+    }
+    public static void performRememberMeLogin(Data mainDataModel) {
+        // checking user account type
+        if (getRememberMeUserType().equals("S")) {
+            // if student
+            getRememberMeStudent(mainDataModel).loadMainMenu(mainDataModel);
+        } else {
+            // if instructor
+            getRememberInstructor(mainDataModel).loadMainMenu(mainDataModel);
+        }
+    }
+    public static void setRememberMe(String username, String accountType) {
+        // data to be written in file
+        String fileData = username + ";" + accountType;
+        FileWorker.writeFile(fileData, "Data/Users/RememberMe.txt");
+    }
+    public static void turnOffRememberMeOption() {
+        FileWorker.writeFile("", "Data/Users/RememberMe.txt");
+    }
 
     // HELPER METHODS
     private static void displayDottedLines() {
@@ -321,5 +346,35 @@ public abstract class Authentication {
             }
         }
         return isUsernameUnique;
+    }
+    private static String getRememberMeUserType() {
+        return FileWorker.readFile("Data/Users/RememberMe.txt").getFirst().split(";")[1];
+    }
+    private static String getRememberMeUsernameValue() {
+        return FileWorker.readFile("Data/Users/RememberMe.txt").getFirst().split(";")[0];
+    }
+    private static Student getRememberMeStudent(Data mainDataModel) {
+        // student to be returned
+        Student student = new Student("", "");
+        // looping over students
+        for (Student s : mainDataModel.getStudents()) {
+            if (s.getUsername().equals(getRememberMeUsernameValue())) {
+                student = s;
+                break;
+            }
+        }
+        return student;
+    }
+    private static Instructor getRememberInstructor(Data mainDataModel) {
+        // instructor to be returned
+        Instructor instructor = new Instructor("", "");
+        // looping over instructors
+        for (Instructor i : mainDataModel.getInstructors()) {
+            if (i.getUsername().equals(getRememberMeUsernameValue())) {
+                instructor = i;
+                break;
+            }
+        }
+        return instructor;
     }
 }

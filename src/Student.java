@@ -51,8 +51,9 @@ public class Student {
                             " 2) Edit Account Information\n" +
                             " 3) Check Academic Records\n" +
                             " 4) Take a test\n" +
-                            " 5) Logout\n" +
-                            "CHOICE (1 - 5): "
+                            " 5) Change remember me option \n" +
+                            " 6) Logout\n" +
+                            "CHOICE (1 - 6): "
             );
 
             choice = sc.nextInt();
@@ -75,13 +76,16 @@ public class Student {
                     takeTest(data);
                     break;
                 case 5:
+                    changeRememberMeOption();
+                    break;
+                case 6:
                     break;
 
                 default:
                     System.out.println("Invalid Choice! Please choose a valid option.");
                     displayDottedLine();
             }
-        } while (choice != 5);
+        } while (choice != 6);
         data.saveData(); // Saving data in case of any changes
         System.out.println("Logging you out...");
     }
@@ -261,6 +265,49 @@ public class Student {
             displayDottedLine();
         }
 
+    }
+
+    private void changeRememberMeOption() {
+        if(Authentication.checkRememberMe()) {
+            String input = "";
+            System.out.print("Remember me option is turned on \nDo you want to turn it off? (Yes/No) : ");
+            input = sc.nextLine();
+            while(!input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("no")) {
+                displayDottedLine();
+                System.out.print("Invalid choice, please enter again: ");
+                input = sc.nextLine();
+            }
+            // turning off remember me option
+            if (input.equalsIgnoreCase("yes")) {
+                Authentication.turnOffRememberMeOption();
+                System.out.println("Remember me option was turned off, navigating you back...");
+                displayDottedLine();
+            } else {
+                displayDottedLine();
+                System.out.println("Remember me option is still on, navigating you back...");
+                displayDottedLine();
+            }
+        } else {
+            String input = "";
+            System.out.print("Do you want to turn on remember me option? (Yes/No) : ");
+            input = sc.nextLine();
+            while(!input.equalsIgnoreCase("yes") && !input.equalsIgnoreCase("no")) {
+                displayDottedLine();
+                System.out.print("Invalid choice, please enter again: ");
+                input = sc.nextLine();
+            }
+            // turn on remember me
+            if (input.equalsIgnoreCase("yes")) {
+                displayDottedLine();
+                System.out.println("Turning on remember me option...");
+                Authentication.setRememberMe(this.username, "S");
+                System.out.println("Remember me option is turned on, navigating you back...");
+                displayDottedLine();
+            } else {
+                System.out.println("Remember me is unchanged, navigating you back...");
+                displayDottedLine();
+            }
+        }
     }
 
 

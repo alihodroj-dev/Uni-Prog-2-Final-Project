@@ -6,11 +6,22 @@ public class Main {
         Data mainDataModel = new Data();
         mainDataModel.loadData();
 
-        // Authentication loop
+        // checking if remember me
+        if (Authentication.checkRememberMe()) {
+            // performing automatic login with remember me
+            Authentication.performRememberMeLogin(mainDataModel);
+        } else {
+            // manual login in main menu
+            displayMainMenu(mainDataModel);
+        }
+    }
+    private static void displayDottedLine() {
+        System.out.println("********************************************");
+    }
+    private static void displayMainMenu(Data mainDataModel) {
         Scanner sc = new Scanner(System.in);
         int input = 0;
-
-        // Main menu loop
+        // main loop
         do {
             // display message
             System.out.println("Welcome to QUIZY! \n 1) Login \n 2) Sign Up \n 3) Exit");
@@ -95,8 +106,5 @@ public class Main {
                     break;
             }
         } while(input != 3);
-    }
-    private static void displayDottedLine() {
-        System.out.println("********************************************");
     }
 }

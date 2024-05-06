@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FileWorker {
-    public ArrayList<String> readFile(String fileName) {
+    public static ArrayList<String> readFile(String fileName) {
         ArrayList<String> output = new ArrayList<String>();
         try {
             File file = new File(fileName);
@@ -21,7 +21,7 @@ public class FileWorker {
         return output;
     }
 
-    public void writeFile(String data, String path) {
+    public static void writeFile(String data, String path) {
         try {
             FileWriter fileWriter = new FileWriter(path);
             fileWriter.write(data);
