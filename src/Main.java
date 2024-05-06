@@ -14,7 +14,7 @@ public class Main {
         do {
             // display message
             System.out.println("Welcome to QUIZY! \n 1) Login \n 2) Sign Up \n 3) Exit");
-            System.out.print("Choice: ");
+            System.out.print("CHOICE (1 - 3): ");
             input = sc.nextInt();
             // handling invalid input
             while(input <= 0 || input > 3) {
@@ -30,7 +30,7 @@ public class Main {
                     // display message
                     displayDottedLine();
                     System.out.println("Choose your account type: \n 1) Student \n 2) Instructor \n 3) Back");
-                    System.out.print("Choice: ");
+                    System.out.print("CHOICE (1 - 3): ");
                     // taking input2
                     input2 = sc.nextInt();
                     // handling invalid input
@@ -62,7 +62,7 @@ public class Main {
                     // display message
                     displayDottedLine();
                     System.out.println("Choose the type of account your want to create: \n 1) Student \n 2) Instructor \n 3) Back");
-                    System.out.print("Choice: ");
+                    System.out.print("CHOICE (1 - 3): ");
                     // taking input3
                     input3 = sc.nextInt();
                     // handling invalid input
@@ -96,7 +96,6 @@ public class Main {
             }
         } while(input != 3);
     }
-
     private static void displayDottedLine() {
         System.out.println("********************************************");
     }

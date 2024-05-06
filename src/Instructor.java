@@ -88,9 +88,10 @@ public class Instructor {
                     break;
                 case 4:
                     System.out.println("Navigating back to main menu...");
+                    displayDottedLine();
                     break;
                 default:
-                    System.out.println("Invalid Choice");
+                    System.out.print("Invalid choice, enter again: ");
             }
         } while (mainChoice != 4);
     }
@@ -117,6 +118,7 @@ public class Instructor {
         data.getTests().add(test);
 
         System.out.println("The test " + tName + " of ID " + tId + " has been successfully created");
+        displayDottedLine();
     }
 
     // Updates the name based on user selection
@@ -136,10 +138,12 @@ public class Instructor {
 
             if (name.isEmpty()) {
                 System.out.println(str + " Name Field is Required... No Changes were made!");
+                displayDottedLine();
             }
 
             if (name.equalsIgnoreCase(temp[tempIndex])) {
                 System.out.println("Please Enter a name other than the current one... No Changes were made!");
+                displayDottedLine();
             }
         } while (name.isEmpty() || name.equalsIgnoreCase(temp[tempIndex]));
 
@@ -158,6 +162,7 @@ public class Instructor {
             data.getInstructors().get(index).username = this.username;
             System.out.println(str + " Name was Successfully Modified");
             System.out.println("Your new username is : " + username);
+            displayDottedLine();
         }
     }
 
@@ -173,10 +178,12 @@ public class Instructor {
             displayDottedLine();
             if (newPassword.length() < MINLENGTH) {
                 System.out.println("The password should have at least " + MINLENGTH + " characters, please try again");
+                displayDottedLine();
             }
 
             if (newPassword.length() > MAXLENGTH) {
                 System.out.println("The password should have at most " + MAXLENGTH + " characters, please try again");
+                displayDottedLine();
             }
         } while (newPassword.length() < MINLENGTH || newPassword.length() > MAXLENGTH);
 
@@ -188,10 +195,12 @@ public class Instructor {
             if (!confirmPassword.equals(newPassword) && attempts != 0) {
                 attempts--;
                 System.out.println("Passwords Don't Match, try again (" + attempts + " attempts left)");
+                displayDottedLine();
             }
 
             if (attempts == 0) {
                 System.out.println("No Attempts left! Navigating Back to Menu");
+                displayDottedLine();
                 break;
             }
         } while (!confirmPassword.equals(newPassword) && attempts != 0);
@@ -201,6 +210,7 @@ public class Instructor {
             this.password = newPassword;
             data.getInstructors().get(instructorIndex).password = this.password;
             System.out.println("Password was Successfully modified");
+            displayDottedLine();
         }
     }
 
@@ -215,10 +225,6 @@ public class Instructor {
         );
         displayDottedLine();
     }
-
-
-
-
 
     // HELPER METHODS
 
@@ -380,7 +386,6 @@ public class Instructor {
         }
         return false;
     }
-
 
     // Helper method to find instructor index
     private int instructorIndexFinder(String u, Data data) {

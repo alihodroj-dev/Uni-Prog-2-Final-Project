@@ -50,7 +50,6 @@ public abstract class Authentication {
             }
         } while(!loggedIn);
     }
-
     public static void instructorLogin(Data dataModel) {
         // loop variables
         boolean loggedIn = false;
@@ -98,7 +97,6 @@ public abstract class Authentication {
             }
         } while(!loggedIn);
     }
-
     public static void createStudent(Data dataModel) {
         // loop variables
         boolean userCreated = false;
@@ -180,7 +178,6 @@ public abstract class Authentication {
             }
         } while (!userCreated);
     }
-
     public static void createInstructor(Data dataModel) {
         // loop variables
         boolean userCreated = false;
