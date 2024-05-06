@@ -1,4 +1,6 @@
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -70,7 +72,7 @@ public class Student {
                     break;
 
                 case 4:
-                    // takeTest();
+                    takeTest(data);
                     break;
                 case 5:
                     break;
@@ -121,6 +123,40 @@ public class Student {
 
 
     }
+    public void takeTest(Data data) {
+         String tID , tPassword;
+         System.out.println("YOU ARE ABOUT TO TAKE A TEST....");
+         do {
+             System.out.print("ENTER TEST ID : ");
+             tID = sc.nextLine();
+             displayDottedLine();
+         }while (!isTestAvailable(tID , data));
+         int index = testIndexFinder(tID, data);
+         if(index != -1) {
+             Test t = data.getTests().get(index);
+             int attempts =3;
+             do{
+                 System.out.print("ENTER PASSWORD: ");
+                 tPassword = sc.nextLine();
+                 if(isPasswordWrong(t , tPassword)) {
+                     attempts--;
+                     if(attempts != 0)
+                          System.out.println("YOU HAVE " + attempts + " ATTEMPTS LEFT");
+                     else
+                          System.out.println("NO ATTEMPTS LEFT...NAVIGATING YOU BACK");
+                 }
+             }while (isPasswordWrong(t , tPassword) && attempts!=0);
+             if(attempts != 0) {
+                 StudentGrade sg = startTestAndGradeIt(t);
+                 System.out.println("TEST DONE ! FINAL GRADE : " + sg.getGrade());
+                 displayDottedLine();
+                 grades.add(sg);
+             }
+
+
+         }
+    }
+
 
     // UPDATES
 
@@ -269,7 +305,79 @@ public class Student {
 
 
     // HELPER METHODS
+    // Take tests Helper methods
+    private int testIndexFinder(String id , Data data) {
+        for(int i=0 ; i < data.getTests().size() ; i++) {
+            if(data.getTests().get(i).getTestId().equals(id)) return i;
+        }
+        return -1;
+    }
+    private boolean isTestAvailable(String id, Data data) {
+        // Checks if test has already been taken
+        for(int i=0 ; i < grades.size() ; i++) {
+            if(grades.get(i).getTestId().equals(id)) {
+                System.out.println("This test has already been taken");
+                return false;
+            }
+        }
+        // Checks if test ID is valid
+        boolean notFound = true;
+        for(Test t : data.getTests()) {
+            if(t.getTestId().equals(id)) notFound = false;
+        }
+        if(notFound) {
+            System.out.println("Test was not found... Please enter a valid ID");
+            return false;
+        }
+        else
+            return true;
+    }
+    private boolean isPasswordWrong(Test t , String password) {
+        boolean isWrong = false;
+        if(!t.getTestPassword().equals(password)) {
+            System.out.println("Wrong Password...Try Again");
+            isWrong = true;
+        }
+        return  isWrong;
+    }
+    private String getCurrentDate() {
+        // Get the current date
+        LocalDate currentDate = LocalDate.now();
 
+        // Create a formatter for the "dd/MM/yy" pattern
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yy");
+
+        // Format the current date using the formatter
+
+        return currentDate.format(formatter);
+    }
+    private StudentGrade startTestAndGradeIt(Test t) {
+        double grade=0;
+        int choice;
+        for(int i=0; i < t.getNumberOfQuestions() ; i++) {
+            System.out.print(" " + (i+1) + " - ");
+            displayQuestion(t.getQuestions().get(i));
+            do {
+                System.out.print("ENTER YOUR ANSWER (1 - 4): ");
+                choice = sc.nextInt();
+                if(choice < 1 || choice > 4)
+                    System.out.println("Invalid Choice..Try Again");
+            }while (choice < 1 || choice > 4);
+            choice--;
+            sc.nextLine();
+            displayDottedLine();
+            if(choice == t.getQuestions().get(i).getCorrectAnswerIndex())
+                grade++;
+        }
+        double finalScore = (grade / t.getNumberOfQuestions()) * 100.0;
+        return new StudentGrade(t.getTestId() , getCurrentDate() , finalScore);
+    }
+    private void displayQuestion(Question q) {
+        System.out.println(q.getDescription());
+        for(int i=0 ; i< q.getOptions().size(); i++) {
+            System.out.println(" " + (i+1) + ") " + q.getOptions().get(i));
+        }
+    }
 
     // Helper method to find student index
     private int studentIndexFinder(String u, Data data) {
