@@ -12,32 +12,37 @@ public class Student {
     private final Scanner sc = new Scanner(System.in);
 
     // Constructor initializing username and password
+
     public Student(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    // Getter methods
+
+    // GETTERS
+
     public String getUsername() {
         return username;
     }
-
     public String getPassword() {
         return password;
     }
-
     public ArrayList<StudentGrade> getGrades() {
         return grades;
     }
 
-    // Setter for grades
+
+    // SETTERS
+
     public void setGrades(ArrayList<StudentGrade> grades) {
         this.grades = grades;
     }
 
+
     // MENUS
 
-    // Main menu of the application
+    // MAIN MENU
+
     public void loadMainMenu(Data data) {
 
         int choice;
@@ -56,6 +61,11 @@ public class Student {
                             "CHOICE (1 - 6): "
             );
 
+            while(!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid choice ( 1 - 6 ) .");
+                sc.nextLine(); // clearing buffer
+            }
             choice = sc.nextInt();
             sc.nextLine(); // Clearing buffer after input
             displayDottedLine();
@@ -82,15 +92,16 @@ public class Student {
                     break;
 
                 default:
-                    System.out.println("Invalid Choice! Please choose a valid option.");
-                    displayDottedLine();
+                    System.out.println("Enter a valid option (1 - 6) :.");
             }
         } while (choice != 6);
         data.saveData(); // Saving data in case of any changes
         System.out.println("Logging you out...");
     }
 
-    // Menu for editing account information
+
+    // UPDATE ACCOUNT MENU
+
     private void loadAccountMenu(Data data) {
 
         int mainChoice;
@@ -103,7 +114,11 @@ public class Student {
                             " 4) Go Back\n" +
                             "CHOICE (1 - 4): "
             );
-
+            while(!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid option ( 1 - 4 ) : ");
+                sc.nextLine(); // clearing buffer
+            }
             mainChoice = sc.nextInt();
             sc.nextLine(); // Clearing buffer after input
             displayDottedLine();
@@ -119,22 +134,26 @@ public class Student {
 
                 case 4:
                     System.out.println("Navigating back to main menu...");
-                    displayDottedLine();
+
                     break;
 
                 default:
-                    System.out.println("Invalid Choice");
-                    displayDottedLine();
+                    System.out.println("Enter a valid option (1 - 4) : ");
+
             }
         } while (mainChoice != 4);
 
 
     }
+
+
+    // TEST TAKER MENU
+
     public void takeTest(Data data) {
          String tID , tPassword;
-         System.out.println("YOU ARE ABOUT TO TAKE A TEST....");
+         System.out.println("You are about to take a test....");
          do {
-             System.out.print("ENTER TEST ID : ");
+             System.out.print("TEST ID : ");
              tID = sc.nextLine();
              displayDottedLine();
          }while (!isTestAvailable(tID , data));
@@ -143,29 +162,29 @@ public class Student {
              Test t = data.getTests().get(index);
              int attempts = 3;
              do{
-                 System.out.print("ENTER PASSWORD: ");
+                 System.out.print("PASSWORD: ");
                  tPassword = sc.nextLine();
                  if(!t.getTestPassword().equals(tPassword)) {
-                     System.out.print("WRONG TEST PASSWORD ");
+                     System.out.print("Enter a valid password : ");
                      attempts--;
                      if(attempts != 0)
-                          System.out.println("YOU HAVE " + attempts + " ATTEMPTS LEFT");
+                          System.out.println("You have " + attempts + " attempts left");
                      else
-                          System.out.println("NO ATTEMPTS LEFT...NAVIGATING YOU BACK");
+                          System.out.println("No attempts left...Navigating you back!");
                  }
              }while (!t.getTestPassword().equals(tPassword) && attempts!=0);
              if(attempts != 0) {
                  StudentGrade sg = startTestAndGradeIt(t);
-                 System.out.println("TEST DONE ! FINAL GRADE : " + sg.getGrade());
+                 System.out.println("Test done ! Final grade : " + sg.getGrade());
                  displayDottedLine();
                  grades.add(sg);
              }
          }
     }
 
-    // UPDATES
 
-    // Updates the username based on the part being changed
+    // UPDATE METHODS ( STUDENT )
+
     private void updateName(Data data, int choice) {
         int tempIndex = (choice == 1) ? 0 : 1;
         String str = (choice == 1) ? "First" : "Last";
@@ -173,22 +192,19 @@ public class Student {
         String newName;
 
         do {
-            System.out.print("NEW " + str.toUpperCase() + " NAME : ");
+            System.out.print("Enter your new " + str + " name : ");
             newName = sc.nextLine();
             displayDottedLine();
 
             // Removing Spaces . if any
             newName = newName.replaceAll(" " , "");
 
-
             if (newName.isEmpty()) {
-                System.out.println(str + " Name Field is Required... No Changes were made!");
-                displayDottedLine();
+                System.out.println("Field shouldn't be empty!");
             }
 
             if (newName.equalsIgnoreCase(temp[tempIndex])) {
                 System.out.println("Please Enter a name other than the current one... No Changes were made!");
-                displayDottedLine();
             }
         } while (newName.isEmpty() || newName.equalsIgnoreCase(temp[tempIndex]));
 
@@ -213,46 +229,39 @@ public class Student {
             renameGradeFile(oldUsername, username);
             System.out.println(str + " Name was Successfully Modified");
             System.out.println("Your new username is : "+ username);
-            displayDottedLine();
         }
     }
-
-    // Updates user password
     private void updatePassword(Data data) {
         final int MINLENGTH = 8, MAXLENGTH = 16;
         String newPassword, confirmPassword;
         int attempts = 3;
 
         do {
-            System.out.print("NEW PASSWORD: ");
+            System.out.print("Enter your new password : ");
             newPassword = sc.nextLine();
             displayDottedLine();
 
             if (newPassword.length() < MINLENGTH) {
                 System.out.println("The password should have at least " + MINLENGTH + " characters, please try again");
-                displayDottedLine();
             }
 
             if (newPassword.length() > MAXLENGTH) {
                 System.out.println("The password should have at most " + MAXLENGTH + " characters, please try again");
-                displayDottedLine();
             }
         } while (newPassword.length() < MINLENGTH || newPassword.length() > MAXLENGTH);
 
         do {
-            System.out.print("CONFIRM PASSWORD: ");
+            System.out.print("Confirm your new password : ");
             confirmPassword = sc.nextLine();
             displayDottedLine();
 
             if (!confirmPassword.equals(newPassword) && attempts != 0) {
                 attempts--;
                 System.out.println("Passwords Don't Match, try again (" + attempts + " attempts left)");
-                displayDottedLine();
             }
 
             if (attempts == 0) {
                 System.out.println("No Attempts left! Navigating Back to Menu");
-                displayDottedLine();
                 break;
             }
         } while (!confirmPassword.equals(newPassword) && attempts != 0);
@@ -262,11 +271,9 @@ public class Student {
             this.password = newPassword;
             data.getStudents().get(studentIndex).password = this.password;
             System.out.println("Password was Successfully modified");
-            displayDottedLine();
         }
 
     }
-
     private void changeRememberMeOption() {
         if(Authentication.checkRememberMe()) {
             String input = "";
@@ -313,34 +320,31 @@ public class Student {
 
     // DISPLAYS
 
-    // Displays account information by splitting username into first and last name
     private void displayAccountInformation() {
         String[] temp = this.username.split("_");
 
         System.out.println(
                 " Username : " + username +
-                " First Name: " + temp[0] +
+                "\n First Name: " + temp[0] +
                         "\n Last Name: " + temp[1] +
                         "\n Password: " + this.password
         );
 
         displayDottedLine();
     }
-
-    // Displays Academic Records
     private  void displayAcademicRecords(Data data) {
         String tempTitle="";
         System.out.println("Displaying All Taken tests...\n");
-        for(int i=0 ; i < grades.size() ; i++) {
-            for(Test t : data.getTests()) {
-                if(grades.get(i).getTestId().equalsIgnoreCase(t.getTestId())) {
+        for (StudentGrade grade : grades) {
+            for (Test t : data.getTests()) {
+                if (grade.getTestId().equalsIgnoreCase(t.getTestId())) {
                     tempTitle = t.getTestName();
                     break;
                 }
             }
-            if(!tempTitle.isEmpty()) {
+            if (!tempTitle.isEmpty()) {
                 System.out.println("Test Name : " + tempTitle);
-                System.out.println(grades.get(i));
+                System.out.println(grade);
                 System.out.println("====================");
             }
         }
@@ -350,7 +354,10 @@ public class Student {
 
 
     // HELPER METHODS
-    // Take tests Helper methods
+
+
+    // TEST TAKER HELPER METHODS
+
     private int testIndexFinder(String id , Data data) {
         for(int i=0 ; i < data.getTests().size() ; i++) {
             if(data.getTests().get(i).getTestId().equals(id)) return i;
@@ -359,8 +366,8 @@ public class Student {
     }
     private boolean isTestAvailable(String id, Data data) {
         // Checks if test has already been taken
-        for(int i=0 ; i < grades.size() ; i++) {
-            if(grades.get(i).getTestId().equals(id)) {
+        for (StudentGrade grade : grades) {
+            if (grade.getTestId().equals(id)) {
                 System.out.println("This test has already been taken");
                 displayDottedLine();
                 return false;
@@ -397,14 +404,20 @@ public class Student {
             System.out.print(" " + (i+1) + " - ");
             displayQuestion(t.getQuestions().get(i));
             do {
-                System.out.print("ENTER YOUR ANSWER (1 - 4): ");
+                System.out.print("Enter your answer (1 - 4): ");
+                while(!sc.hasNextInt()) {
+                    displayDottedLine();
+                    System.out.println("Enter a valid choice ( 1 - 4 ) .");
+                    sc.nextLine(); // clearing incorrect buffer
+                }
                 choice = sc.nextInt();
+                sc.nextLine();
+                displayDottedLine();
                 if(choice < 1 || choice > 4)
-                    System.out.println("Invalid Choice..Try Again");
+                    System.out.println("Enter a valid answer : ");
             }while (choice < 1 || choice > 4);
             choice--;
-            sc.nextLine();
-            displayDottedLine();
+
             if(choice == t.getQuestions().get(i).getCorrectAnswerIndex())
                 grade++;
         }
@@ -418,15 +431,15 @@ public class Student {
         }
     }
 
-    // Helper method to find student index
+
+    // UPDATE ACCOUNT HELPER METHODS
+
     private int studentIndexFinder(String u, Data data) {
         for (int i = 0; i < data.getStudents().size(); i++) {
             if (data.getStudents().get(i).username.equalsIgnoreCase(u)) return i;
         }
         return -1; // Not found
     }
-
-    // Helper method to rename file linked to student in Grades folder
     private void renameGradeFile(String oldUsername, String newUsername) {
         String oldFilePath = "Data/Grades/" + oldUsername + ".txt";
         String newFilePath = "Data/Grades/" + newUsername + ".txt";
@@ -434,8 +447,6 @@ public class Student {
         File newFile = new File(newFilePath);
         oldFile.renameTo(newFile);
     }
-
-    // Checks if username is already taken
     private boolean isTaken(String username, Data data) {
         for (Student s : data.getStudents()) {
 
@@ -445,9 +456,18 @@ public class Student {
         }
         return false;
     }
+
+
+    // DEFAULT DISPLAY HELPER METHOD
+
     private static void displayDottedLine() {
         System.out.println("********************************************");
     }
+
+
+
+
+
 
     @Override
     public String toString() {

@@ -15,6 +15,13 @@ public class Main {
             displayMainMenu(mainDataModel);
         }
     }
+    private static void checkIfInt(Scanner sc) {
+        while(!sc.hasNextInt() ) {
+            sc.nextLine();
+            displayDottedLine();
+            System.out.print("Invalid choice , enter again : ");
+        }
+    }
     private static void displayDottedLine() {
         System.out.println("********************************************");
     }
@@ -25,14 +32,25 @@ public class Main {
         do {
             // display message
             System.out.println("Welcome to QUIZY! \n 1) Login \n 2) Sign Up \n 3) Exit");
-            System.out.print("CHOICE (1 - 3): ");
-            input = sc.nextInt();
+
+            System.out.print("Enter your choice (1 - 3): ");
             // handling invalid input
-            while(input <= 0 || input > 3) {
+            checkIfInt(sc);
+            if(sc.hasNextInt()) {
+                input = sc.nextInt();
+                while(input <= 0 || input > 3) {
+                    displayDottedLine();
+                    System.out.print("Invalid choice, enter again : ");
+                    input = sc.nextInt();
+                }
+            }
+            sc.nextLine(); // clearing buffer
+
+            /*while(input <= 0 || input > 3) {
                 displayDottedLine();
                 System.out.print("Invalid choice, enter again: ");
                 input = sc.nextInt();
-            }
+            } */
             // switching on input
             switch (input) {
                 // case of login
@@ -41,15 +59,26 @@ public class Main {
                     // display message
                     displayDottedLine();
                     System.out.println("Choose your account type: \n 1) Student \n 2) Instructor \n 3) Back");
-                    System.out.print("CHOICE (1 - 3): ");
+                    System.out.print("Enter your choice (1 - 3): ");
                     // taking input2
-                    input2 = sc.nextInt();
                     // handling invalid input
+                    // handling invalid input
+                    checkIfInt(sc);
+                    if(sc.hasNextInt()) {
+                        input2 = sc.nextInt();
+                        while(input2 < 1 || input2 > 3) {
+                            displayDottedLine();
+                            System.out.print("Invalid choice, enter again : ");
+                            input2 = sc.nextInt();
+                        }
+                    }
+                    sc.nextLine(); // clearing buffer
+                    /*
                     while(input2 <= 0 || input2 > 3) {
                         displayDottedLine();
                         System.out.print("Invalid choice, enter again: ");
                         input2 = sc.nextInt();
-                    }
+                    }*/
                     // switching on input2
                     switch (input2) {
                         case 1:
@@ -75,13 +104,24 @@ public class Main {
                     System.out.println("Choose the type of account your want to create: \n 1) Student \n 2) Instructor \n 3) Back");
                     System.out.print("CHOICE (1 - 3): ");
                     // taking input3
-                    input3 = sc.nextInt();
                     // handling invalid input
-                    while(input3 <= 0 || input3 > 3) {
+                    checkIfInt(sc);
+                    if(sc.hasNextInt()) {
+                        input3 = sc.nextInt();
+                        while(input3 <= 0 || input3 > 3) {
+                            displayDottedLine();
+                            System.out.print("Invalid choice, enter again : ");
+                            input3 = sc.nextInt();
+                        }
+                    }
+                    sc.nextLine(); // clearing buffer
+                    /*while(input3 <= 0 || input3 > 3) {
                         displayDottedLine();
                         System.out.print("Invalid choice, enter again: ");
                         input3 = sc.nextInt();
                     }
+
+                     */
                     // switching on input3
                     switch (input3) {
                         case 1:

@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -8,21 +9,25 @@ public class Instructor {
     private final Scanner sc = new Scanner(System.in);
 
     // Constructor to initialize username and password
+
     public Instructor(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    // Getter methods
+
+    // GETTERS
+
     public String getUsername() {
         return username;
     }
-
     public String getPassword() {
         return password;
     }
 
-    // Main menu handling
+
+    // MAIN MENU
+
     public void loadMainMenu(Data data) {
         int choice;
         String[] temp = this.username.split("_");
@@ -34,11 +39,17 @@ public class Instructor {
                     " 1) Display Account Information\n" +
                             " 2) Edit Account Information\n" +
                             " 3) Create test\n" +
-                            " 4) Change remember me option\n" +
-                            " 5) Logout\n" +
-                            "CHOICE (1 - 5): "
+                            " 4) Update existing test\n" +
+                            " 5) Delete test\n" +
+                            " 6) Change remember me option\n" +
+                            " 7) Logout\n" +
+                            "Enter your choice (1 - 7 ): "
             );
-
+            while(!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid choice ( 1 - 7 ) .");
+                sc.nextLine(); // clearing buffer
+            }
             choice = sc.nextInt();
             sc.nextLine(); // Clearing buffer after input
             displayDottedLine();
@@ -54,19 +65,27 @@ public class Instructor {
                     createTest(data);
                     break;
                 case 4:
-                    changeRememberMeOption();
+                    updateTest(data);
                     break;
                 case 5:
+                    deleteTest(data);
+                    break;
+                case 6:
+                    changeRememberMeOption();
+                    break;
+                case 7:
                     break;
                 default:
                     System.out.println("Invalid Choice!");
             }
-        } while (choice != 5);
+        } while (choice != 7);
         data.saveData(); // Saving data in case of any changes
         System.out.println("Logging you out...");
     }
 
-    // Menu for account editing
+
+    // UPDATE ACCOUNT MENU
+
     private void loadAccountMenu(Data data) {
         int mainChoice;
 
@@ -78,6 +97,11 @@ public class Instructor {
                             " 4) Go Back\n" +
                             "CHOICE (1 - 4): "
             );
+            while(!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid choice ( 1 - 6 ) .");
+                sc.nextLine(); // clearing buffer
+            }
 
             mainChoice = sc.nextInt();
             sc.nextLine(); // Clearing buffer after input
@@ -100,8 +124,10 @@ public class Instructor {
         } while (mainChoice != 4);
     }
 
-    // Method to create a test
-    public void createTest(Data data) {
+
+    // CREATE METHOD ( TEST )
+
+    private void createTest(Data data) {
         String tName, tId, tPassword;
         char testType;
 
@@ -125,61 +151,214 @@ public class Instructor {
         displayDottedLine();
     }
 
-    // Updates the name based on user selection
+
+    // UPDATE METHOD ( TEST )
+
+    private void updateTest(Data data) {
+        String tID;
+        String tPassword;
+        String tName;
+        do {
+            System.out.print("TEST ID : ");
+            tID = sc.nextLine();
+            displayDottedLine();
+        }while (!isTestAvailable(tID , data));
+        int index = testIndexFinder(tID , data);
+        if(index != -1) {
+            Test t = data.getTests().get(index);
+            int attempts = 3;
+            do{
+                System.out.print("PASSWORD: ");
+                tPassword = sc.nextLine();
+                displayDottedLine();
+                if(!t.getTestPassword().equals(tPassword)) {
+                    System.out.print("Enter a valid password : ");
+                    attempts--;
+                    if(attempts != 0)
+                        System.out.println("You have " + attempts + " attempts left");
+                    else
+                        System.out.println("No attempts left...Navigating you back!");
+                }
+            }while (!t.getTestPassword().equals(tPassword) && attempts!=0);
+            if(attempts !=0) {
+                int choice;
+                char testType = t.getTestType();
+                tName = t.getTestName();
+                Test updated;
+                do {
+                    toggleUpdateMenu();
+                    choice = sc.nextInt();
+                    sc.nextLine();
+                    displayDottedLine();
+                    switch (choice) {
+                        case 1:
+                            tID = setTestID(data);
+                            break;
+                        case 2:
+                            tName = setTestName();
+                            break;
+                        case 3:
+                            tPassword = setTestPassword();
+                            break;
+                        case 4:
+                            int updateQChoice;
+                            int bound = t.getQuestions().size();
+                            do {
+                                toggleUpdateQuestionMenu(t , bound);
+                                updateQChoice = sc.nextInt();
+                                sc.nextLine();
+                                displayDottedLine();
+                                if (updateQChoice != (bound + 1))
+                                    updateSpecificQuestion(t, t.getQuestions().get(updateQChoice - 1));
+                            } while (updateQChoice != (bound + 1));
+                            break;
+                        case 5:
+                            break;
+                        default:
+                            System.out.println("Invalid choice , Try again.");
+                    }
+                }while (choice != 5);
+                if (testType == 'Q')
+                    updated = new Quiz(tID, tPassword, testType, tName);
+                else if (testType == 'M')
+                    updated = new Midterm(tID, tPassword, testType, tName);
+                else
+                    updated = new Final(tID, tPassword, testType, tName);
+                if(!t.equals(updated)) {
+                    updated.setQuestions(t.getQuestions());
+                    int tIndex = data.getTests().indexOf(t);
+                    renameTestFile(t.getTestId() , tID);
+                    data.getTests().set(tIndex , updated);
+                }
+            }
+        }
+    }
+
+
+    // DELETE METHOD ( TEST )
+
+    private void deleteTest( Data data) {
+        String testID;
+        do {
+            System.out.print("Enter test ID : ");
+            testID = sc.nextLine().trim(); // Trim to remove leading/trailing spaces
+            if(testID.isEmpty()) System.out.println("Field shouldn't be empty!");
+        }while (testID.isEmpty());
+        String testPassword;
+        int index =-1;
+        boolean found = false;
+        Test toBeDeleted;
+        for(int i=0 ; i< data.getTests().size() ; i++) {
+            if(data.getTests().get(i).getTestId().equals(testID)) {
+                testPassword = data.getTests().get(i).getTestPassword();
+                found = true;
+                index = i;
+                break;
+            }
+        }
+        if(!found) System.out.println("Test was not found!...navigating you back");
+        else {
+            String choice;
+
+            do {
+                System.out.println("Are you sure you want to delete the test of id "
+                                     + testID + " ? ( yes / no ) : ");;
+                choice = sc.nextLine();
+                if(choice.isEmpty())
+                    System.out.println("Field shouldn't be empty!");
+                if(!choice.equalsIgnoreCase("yes") &&
+                        !choice.equalsIgnoreCase("no"))
+                    System.out.println("Invalid Choice...Try Again");
+            }while (!choice.equalsIgnoreCase("yes") &&
+                    !choice.equalsIgnoreCase("no"));
+            if(choice.equalsIgnoreCase("yes")) {
+                int attempts =3;
+                do {
+                    System.out.print("Enter test password : ");
+                    testPassword = sc.nextLine();
+                    if(!testPassword.equals(data.getTests().get(index).getTestPassword())
+                            && attempts !=0) {
+                        attempts--;
+                        System.out.println("Invalid password..." + attempts + " attempts left!");
+                    }
+                }while (!testPassword.equals(data.getTests().get(index).getTestPassword())
+                        && attempts !=0);
+                if(attempts != 0) {
+                    data.getTests().remove(index);
+                    deleteTestFile(testID);
+                    System.out.println("Test was successfully deleted");
+                }
+                else {
+                    System.out.println("No attempts left ! Navigating you back....");
+                }
+            }
+            else {
+                System.out.println("Deletion cancelled ! Navigating you back....");
+            }
+        }
+    }
+
+
+    // UPDATE METHODS ( INSTRUCTOR )
+
     private void updateName(Data data, int choice) {
         int tempIndex = (choice == 1) ? 0 : 1;
         String str = (choice == 1) ? "First" : "Last";
         String[] temp = this.username.split("_");
-        String name;
+        String newName;
 
         do {
-            System.out.print("NEW " + str.toUpperCase() + " NAME : ");
-            name = sc.nextLine();
+            System.out.print("Enter your new " + str + " name : ");
+            newName = sc.nextLine();
             displayDottedLine();
 
-            // Removing spaces, if any
-            name = name.replaceAll(" ", "");
+            // Removing Spaces . if any
+            newName = newName.replaceAll(" ", "");
 
-            if (name.isEmpty()) {
-                System.out.println(str + " Name Field is Required... No Changes were made!");
+            if (newName.isEmpty()) {
+                System.out.println("Field shouldn't be empty!");
                 displayDottedLine();
             }
 
-            if (name.equalsIgnoreCase(temp[tempIndex])) {
+            if (newName.equalsIgnoreCase(temp[tempIndex])) {
                 System.out.println("Please Enter a name other than the current one... No Changes were made!");
                 displayDottedLine();
             }
-        } while (name.isEmpty() || name.equalsIgnoreCase(temp[tempIndex]));
+        } while (newName.isEmpty() || newName.equalsIgnoreCase(temp[tempIndex]));
 
-        int index = instructorIndexFinder(username, data);
+        int index = instructorIndexFinder(username , data);
 
         if (index != -1) {
             Random rand = new Random();
-
+            String oldUsername = this.username;
             String newUsername;
             do {
-                newUsername = (choice == 1) ? name + "_" + temp[1] : temp[0] + "_" + name;
-                newUsername += "_" + rand.nextInt(1000, 10000);
+
+                if (choice == 1)
+                    newUsername = newName + "_" + temp[1] + "_" + rand.nextInt(1000, 10000);
+                else
+                    newUsername = temp[0] + "_" + newName + "_" + rand.nextInt(1000, 10000);
+
             } while (isTaken(newUsername, data));
 
             this.username = newUsername;
+
             data.getInstructors().get(index).username = this.username;
             System.out.println(str + " Name was Successfully Modified");
             System.out.println("Your new username is : " + username);
             displayDottedLine();
         }
     }
-
-    // Updates the password after validating length and confirmation
     private void updatePassword(Data data) {
         final int MINLENGTH = 8, MAXLENGTH = 16;
         String newPassword, confirmPassword;
         int attempts = 3;
 
         do {
-            System.out.print("NEW PASSWORD: ");
+            System.out.print("Enter your new password : ");
             newPassword = sc.nextLine();
             displayDottedLine();
+
             if (newPassword.length() < MINLENGTH) {
                 System.out.println("The password should have at least " + MINLENGTH + " characters, please try again");
                 displayDottedLine();
@@ -192,7 +371,7 @@ public class Instructor {
         } while (newPassword.length() < MINLENGTH || newPassword.length() > MAXLENGTH);
 
         do {
-            System.out.print("CONFIRM PASSWORD: ");
+            System.out.print("Confirm your new password : ");
             confirmPassword = sc.nextLine();
             displayDottedLine();
 
@@ -210,26 +389,14 @@ public class Instructor {
         } while (!confirmPassword.equals(newPassword) && attempts != 0);
 
         if (attempts != 0) {
-            int instructorIndex = instructorIndexFinder(username, data);
+            int index = instructorIndexFinder(username, data);
             this.password = newPassword;
-            data.getInstructors().get(instructorIndex).password = this.password;
+            data.getInstructors().get(index).password = this.password;
             System.out.println("Password was Successfully modified");
             displayDottedLine();
         }
-    }
 
-    // Displays account information
-    private void displayAccountInformation() {
-        String[] temp = this.username.split("_");
-        System.out.println(
-                " Username : " + this.username +
-                        "\n First Name: " + temp[0] +
-                        "\n Last Name: " + temp[1] +
-                        "\n Password: " + this.password
-        );
-        displayDottedLine();
     }
-
     private void changeRememberMeOption() {
         if(Authentication.checkRememberMe()) {
             String input = "";
@@ -273,16 +440,33 @@ public class Instructor {
         }
     }
 
+
+    // DISPLAYS
+
+    // Displays account information
+    private void displayAccountInformation() {
+        String[] temp = this.username.split("_");
+        System.out.println(
+                " Username : " + this.username +
+                        "\n First Name: " + temp[0] +
+                        "\n Last Name: " + temp[1] +
+                        "\n Password: " + this.password
+        );
+        displayDottedLine();
+    }
+
+
+
     // HELPER METHODS
 
-    // test creator helper methods
 
-    // Helper method to set a unique test ID
+    // CREATE TEST HELPER METHODS
+
     private String setTestID(Data data) {
         String id;
         final int MINLENGTH = 4;
         do {
-            System.out.print("ENTER TEST ID: ");
+            System.out.print("Enter test ID: ");
             id = sc.nextLine();
             displayDottedLine();
             // Validate ID length and uniqueness
@@ -293,19 +477,17 @@ public class Instructor {
         } while (id.length() < MINLENGTH || isTestIdTaken(id, data));
         return id;
     }
-
-    // Helper method to set a password for the test
     private String setTestPassword() {
         String password;
         String confirmPassword;
         final int MINLENGTH = 8, MAXLENGTH = 16;
         do {
-            System.out.print("ENTER TEST PASSWORD: ");
+            System.out.print("Enter test password: ");
             password = sc.nextLine();
             displayDottedLine();
             // Check password requirements
             if (password.isEmpty())
-                System.out.println("Password field is required");
+                System.out.println("Field shouldn't be empty!");
             if (password.length() < MINLENGTH)
                 System.out.println("Password must have at least " + MINLENGTH + " characters");
             if (password.length() > MAXLENGTH)
@@ -313,7 +495,7 @@ public class Instructor {
         } while (password.length() < MINLENGTH || password.length() > MAXLENGTH);
 
         do {
-            System.out.print("CONFIRM PASSWORD: ");
+            System.out.print("Confirm test password : ");
             confirmPassword = sc.nextLine();
             displayDottedLine();
             // Confirm password
@@ -323,8 +505,6 @@ public class Instructor {
         } while (!confirmPassword.equals(password));
         return password;
     }
-
-    // Helper method to set the name for the test
     private String setTestName() {
         String name;
         do {
@@ -337,12 +517,15 @@ public class Instructor {
         } while (name.isEmpty());
         return name;
     }
-
-    // Helper method to select the type of test
     private char setTestType() {
         int choice;
         do {
             System.out.print("ENTER TEST TYPE:\n 1) Quiz\n 2) Midterm\n 3) Final\nCHOICE (1 - 3): ");
+            while(!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid option ( 1 - 3 ) : ");
+                sc.nextLine(); // clearing buffer
+            }
             choice = sc.nextInt();
             sc.nextLine();
             displayDottedLine();
@@ -358,19 +541,15 @@ public class Instructor {
         else
             return 'F';
     }
-
-    // Helper method to initialize and set questions for the test
     private void setTestQuestions(Test test) {
         ArrayList<Question> questions = new ArrayList<>();
         for (int i = 0; i < test.getNumberOfQuestions(); i++) {
-            System.out.println("QUESTION " + (i + 1) + " : ");
+            System.out.println("Question " + (i + 1) + " : ");
             Question q = setQuestion();
             questions.add(q);
         }
         test.setQuestions(questions);
     }
-
-    // Helper method to create a question object
     private Question setQuestion() {
         String description = setQuestionDescription();
 
@@ -379,12 +558,10 @@ public class Instructor {
 
         return new Question(description, options, correctIndex);
     }
-
-    // Helper method to set the description of a question
     private String setQuestionDescription() {
         String description;
         do {
-            System.out.print("ENTER DESCRIPTION : ");
+            System.out.print("Enter the description : ");
             description = sc.nextLine();
             displayDottedLine();
             if (description.isEmpty())
@@ -392,16 +569,14 @@ public class Instructor {
         } while (description.isEmpty());
         return description;
     }
-
-    // Helper method to set options for a question
     private ArrayList<String> setOptions() {
         ArrayList<String> options = new ArrayList<>();
         final int NBOPTIONS = 4;
         String tempChoice;
-        System.out.println("ENTER CHOICES : ");
+        System.out.println("Enter choices : ");
         for (int i = 0; i < NBOPTIONS; i++) {
             do {
-                System.out.print("CHOICE " + (i + 1) + ": ");
+                System.out.print("Choice " + (i + 1) + ": ");
                 tempChoice = sc.nextLine();
                 displayDottedLine();
                 if (tempChoice.isEmpty())
@@ -411,12 +586,19 @@ public class Instructor {
         }
         return options;
     }
-
-    // Helper method to set the correct answer index for a question
     private int setCorrectAnswer() {
         int index;
         do {
-            System.out.print("ENTER CORRECT ANSWER (1 - 4): ");
+            System.out.print("Enter the correct answer ( 1 - 4 ): ");
+            while(!sc.hasNextInt()) {
+                System.out.println("Enter a valid choice ( 1 - 4 ) .");
+                sc.nextLine(); // clearing buffer
+            }
+            while(!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid option ( 1 - 4 ) : ");
+                sc.nextLine(); // clearing buffer
+            }
             index = sc.nextInt();
             sc.nextLine(); // Clear buffer after input
             displayDottedLine();
@@ -425,8 +607,6 @@ public class Instructor {
         } while (index < 1 || index > 4);
         return index - 1;
     }
-
-    // Check if test ID is already taken
     private boolean isTestIdTaken(String id, Data data) {
         for (Test t : data.getTests()) {
             if (t.getTestId().equalsIgnoreCase(id)) return true;
@@ -434,21 +614,164 @@ public class Instructor {
         return false;
     }
 
-    // Helper method to find instructor index
+
+    // DELETE TEST HELPER METHODS
+
+    private  void deleteTestFile(String ID) {
+        String path ="Data/Tests/" + ID + ".txt";
+        File fileToDelete = new File(path);
+        fileToDelete.delete();
+    }
+
+
+    // UPDATE TEST HELPER METHODS
+
+    private int testIndexFinder(String id , Data data) {
+        for(int i=0 ; i < data.getTests().size() ; i++) {
+            if(data.getTests().get(i).getTestId().equals(id)) return i;
+        }
+        return -1;
+    }
+    private boolean isTestAvailable(String id , Data data) {
+        if(testIndexFinder(id , data) == -1) {
+            System.out.println("Test was not found !");
+            return false;
+        }
+        return true;
+    }
+    private void updateSpecificQuestion(Test t ,Question q) {
+        displayQuestion(q);
+        String description = q.getDescription();
+        ArrayList<String> options = q.getOptions();
+        int correctIndex = q.getCorrectAnswerIndex();
+        int choice;
+        do{
+        System.out.println(" 1) Change description\n" +
+                " 2) Change a choice\n" +
+                " 3) Change the correct answer\n" +
+                " 4) Go back and save changes");
+
+            System.out.print("Enter your choice ( 1 - 4 ) :");
+            while (!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid choice ( 1 - 4 ) .");
+                sc.nextLine(); // clearing buffer
+            }
+            choice = sc.nextInt();
+            sc.nextLine();
+            displayDottedLine();
+            switch (choice) {
+                case 1:
+                    System.out.println("Current description : " + description);
+                    description = setQuestionDescription();
+                    break;
+                case 2:
+                    int oChoice;
+                    do {
+                        System.out.println("Enter the option you want to change ( 1 - 4 ) : ");
+                        while (!sc.hasNextInt()) {
+                            displayDottedLine();
+                            System.out.println("Enter a valid choice ( 1 - 4 ) .");
+                            sc.nextLine(); // clearing buffer
+                        }
+                        oChoice = sc.nextInt();
+                        sc.nextLine();
+                        displayDottedLine();
+                        if(oChoice < 1 || oChoice > 4)
+                            System.out.println("Invalid choice, Try again.");
+                     }   while (oChoice < 1 || oChoice > 4 );
+                    oChoice--;
+                    System.out.println("Current option : " + options.get(oChoice) ) ;
+                    options.set(oChoice , updateSpecificOption(oChoice));
+                    break;
+                case 3:
+                    System.out.println("Current correct index : " + correctIndex);
+                    correctIndex = setCorrectAnswer();
+                    break;
+                case 4:
+                    break;
+                default:
+                    System.out.println("Invalid choice , Try again.");
+            }
+        }while (choice !=4);
+        Question temp = new Question(description , options , correctIndex);
+        if(!q.equals(temp)) {
+            int qIndex = t.getQuestions().indexOf(q);
+            t.getQuestions().set(qIndex , temp);
+        }
+    }
+    private String updateSpecificOption(int choice) {
+        String tempChoice;
+            do {
+                System.out.print("Choice " + (choice+1) + ": ");
+                tempChoice = sc.nextLine();
+                displayDottedLine();
+                if (tempChoice.isEmpty())
+                    System.out.println("Choice field is required");
+            } while (tempChoice.isEmpty());
+        return  tempChoice;
+    }
+    private void displayQuestion(Question q) {
+        System.out.println("Description : " + q.getDescription());
+        System.out.println("Options : ");
+        for(int i=0 ; i< q.getOptions().size(); i++) {
+            System.out.println(" " +  q.getOptions().get(i));
+        }
+        System.out.println("Correct answer index : " + (q.getCorrectAnswerIndex() +1));
+    }
+    private void renameTestFile(String oldID, String newID) {
+        String oldFilePath = "Data/Tests/" + oldID + ".txt";
+        String newFilePath = "Data/Tests/" + newID + ".txt";
+        File oldFile = new File(oldFilePath);
+        File newFile = new File(newFilePath);
+        oldFile.renameTo(newFile);
+    }
+    private void toggleUpdateMenu() {
+
+        System.out.println(" 1 ) Change test ID\n" +
+                " 2 ) Change test Name\n" +
+                " 3 ) Change test password\n" +
+                " 4 ) Set new questions\n" +
+                " 5 ) Save Changes");
+        System.out.print("Enter your choice ( 1 - 5 ) :");
+        while (!sc.hasNextInt()) {
+            displayDottedLine();
+            System.out.println("Enter a valid choice ( 1 - 5 ) .");
+            sc.nextLine(); // clearing buffer
+        }
+    }
+    private void toggleUpdateQuestionMenu(Test t, int bound) {
+        System.out.println("Choose the question you want to update : ");
+        for (int i = 0; i < t.getQuestions().size(); i++) {
+            System.out.println((i + 1) + ") " + t.getQuestions().get(i).getDescription());
+        }
+        System.out.println((bound + 1) + ") Go back and save changes");
+        System.out.print("Enter your choice ( 1 - " + bound + " ) :");
+        while (!sc.hasNextInt()) {
+            displayDottedLine();
+            System.out.println("Enter a valid choice ( 1 - " + bound + " ) : ");
+            sc.nextLine(); // clearing buffer
+        }
+    }
+
+
+    // UPDATE USERNAME HELPER METHODS
+
     private int instructorIndexFinder(String u, Data data) {
         for (int i = 0; i < data.getInstructors().size(); i++) {
             if (data.getInstructors().get(i).username.equalsIgnoreCase(u)) return i;
         }
         return -1;
     }
-
-    // Checks if username is already taken
     private boolean isTaken(String username, Data data) {
         for (Instructor i : data.getInstructors()) {
             if (i.username.equalsIgnoreCase(username)) return true;
         }
         return false;
     }
+
+
+    // DEFAULT DISPLAY HELPER METHOD
 
     private static void displayDottedLine() {
         System.out.println("********************************************");

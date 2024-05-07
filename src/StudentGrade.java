@@ -1,3 +1,5 @@
+import java.text.DecimalFormat;
+
 public class StudentGrade {
     private final String testId;
     private final String dateTaken;
@@ -24,8 +26,9 @@ public class StudentGrade {
 
     @Override
     public  String toString() {
+        DecimalFormat f = new DecimalFormat("0.00"); // formatting grade
         return "id : " + testId +
                 "\nDate taken : " + dateTaken +
-                "\nGrade : " + grade;
+                "\nGrade : " + f.format(grade);
     }
 }
