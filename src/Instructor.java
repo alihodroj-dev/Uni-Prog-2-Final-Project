@@ -76,7 +76,8 @@ public class Instructor {
                 case 7:
                     break;
                 default:
-                    System.out.println("Invalid Choice!");
+                    displayInvalid();
+                    break;
             }
         } while (choice != 7);
         data.saveData(); // Saving data in case of any changes
@@ -95,7 +96,7 @@ public class Instructor {
                             " 2) Edit Last Name\n" +
                             " 3) Edit Password\n" +
                             " 4) Go Back\n" +
-                            "CHOICE (1 - 4): "
+                            "Enter your choice (1 - 4): "
             );
             while(!sc.hasNextInt()) {
                 displayDottedLine();
@@ -119,7 +120,7 @@ public class Instructor {
                     displayDottedLine();
                     break;
                 default:
-                    System.out.print("Invalid choice, enter again: ");
+                    displayInvalid();
             }
         } while (mainChoice != 4);
     }
@@ -159,7 +160,7 @@ public class Instructor {
         String tPassword;
         String tName;
         do {
-            System.out.print("TEST ID : ");
+            System.out.print("Enter test ID : ");
             tID = sc.nextLine();
             displayDottedLine();
         }while (!isTestAvailable(tID , data));
@@ -168,11 +169,11 @@ public class Instructor {
             Test t = data.getTests().get(index);
             int attempts = 3;
             do{
-                System.out.print("PASSWORD: ");
+                System.out.print("Enter test password : ");
                 tPassword = sc.nextLine();
                 displayDottedLine();
                 if(!t.getTestPassword().equals(tPassword)) {
-                    System.out.print("Enter a valid password : ");
+                    System.out.print("Invalid Password...Try again");
                     attempts--;
                     if(attempts != 0)
                         System.out.println("You have " + attempts + " attempts left");
@@ -187,6 +188,11 @@ public class Instructor {
                 Test updated;
                 do {
                     toggleUpdateMenu();
+                    while (!sc.hasNextInt()) {
+                        displayDottedLine();
+                        System.out.println("Enter a valid choice ( 1 - 5 ) : ");
+                        sc.nextLine(); // clearing buffer
+                    }
                     choice = sc.nextInt();
                     sc.nextLine();
                     displayDottedLine();
@@ -205,6 +211,11 @@ public class Instructor {
                             int bound = t.getQuestions().size();
                             do {
                                 toggleUpdateQuestionMenu(t , bound);
+                                while (!sc.hasNextInt()) {
+                                    displayDottedLine();
+                                    System.out.println("Enter a valid choice ( 1 - " + bound + " ) : ");
+                                    sc.nextLine(); // clearing buffer
+                                }
                                 updateQChoice = sc.nextInt();
                                 sc.nextLine();
                                 displayDottedLine();
@@ -215,7 +226,7 @@ public class Instructor {
                         case 5:
                             break;
                         default:
-                            System.out.println("Invalid choice , Try again.");
+                            displayInvalid();
                     }
                 }while (choice != 5);
                 if (testType == 'Q')
@@ -261,14 +272,14 @@ public class Instructor {
             String choice;
 
             do {
-                System.out.println("Are you sure you want to delete the test of id "
+                System.out.print("Are you sure you want to delete the test of id "
                                      + testID + " ? ( yes / no ) : ");;
                 choice = sc.nextLine();
                 if(choice.isEmpty())
                     System.out.println("Field shouldn't be empty!");
                 if(!choice.equalsIgnoreCase("yes") &&
                         !choice.equalsIgnoreCase("no"))
-                    System.out.println("Invalid Choice...Try Again");
+                         displayInvalid();
             }while (!choice.equalsIgnoreCase("yes") &&
                     !choice.equalsIgnoreCase("no"));
             if(choice.equalsIgnoreCase("yes")) {
@@ -508,19 +519,21 @@ public class Instructor {
     private String setTestName() {
         String name;
         do {
-            System.out.print("ENTER TEST NAME: ");
+            System.out.print("Enter test name : ");
             name = sc.nextLine();
             displayDottedLine();
             // Check if the name is not empty
             if (name.isEmpty())
-                System.out.println("Name field is required");
+                System.out.println("Field shouldn't be empty!");
         } while (name.isEmpty());
         return name;
     }
     private char setTestType() {
         int choice;
+        System.out.println("Choose your test's type:");
         do {
-            System.out.print("ENTER TEST TYPE:\n 1) Quiz\n 2) Midterm\n 3) Final\nCHOICE (1 - 3): ");
+            System.out.print(" 1) Quiz\n 2) Midterm\n 3) Final\n" +
+                    "Enter your choice (1 - 3): ");
             while(!sc.hasNextInt()) {
                 displayDottedLine();
                 System.out.println("Enter a valid option ( 1 - 3 ) : ");
@@ -531,7 +544,7 @@ public class Instructor {
             displayDottedLine();
             // Validate choice
             if (choice < 1 || choice > 3)
-                System.out.println("Invalid Choice...Try again");
+                displayInvalid();
         } while (choice < 1 || choice > 3);
 
         if(choice ==1)
@@ -565,7 +578,7 @@ public class Instructor {
             description = sc.nextLine();
             displayDottedLine();
             if (description.isEmpty())
-                System.out.println("Description Field is Required");
+                System.out.println("Field shouldn't be empty!");
         } while (description.isEmpty());
         return description;
     }
@@ -580,7 +593,7 @@ public class Instructor {
                 tempChoice = sc.nextLine();
                 displayDottedLine();
                 if (tempChoice.isEmpty())
-                    System.out.println("Choice field is required");
+                    System.out.println("Field shouldn't be empty!");
             } while (tempChoice.isEmpty());
             options.add(tempChoice);
         }
@@ -593,17 +606,13 @@ public class Instructor {
             while(!sc.hasNextInt()) {
                 System.out.println("Enter a valid choice ( 1 - 4 ) .");
                 sc.nextLine(); // clearing buffer
-            }
-            while(!sc.hasNextInt()) {
                 displayDottedLine();
-                System.out.println("Enter a valid option ( 1 - 4 ) : ");
-                sc.nextLine(); // clearing buffer
             }
             index = sc.nextInt();
             sc.nextLine(); // Clear buffer after input
             displayDottedLine();
             if (index < 1 || index > 4)
-                System.out.println("Invalid Choice...Try Again");
+                displayInvalid();
         } while (index < 1 || index > 4);
         return index - 1;
     }
@@ -666,23 +675,7 @@ public class Instructor {
                     description = setQuestionDescription();
                     break;
                 case 2:
-                    int oChoice;
-                    do {
-                        System.out.println("Enter the option you want to change ( 1 - 4 ) : ");
-                        while (!sc.hasNextInt()) {
-                            displayDottedLine();
-                            System.out.println("Enter a valid choice ( 1 - 4 ) .");
-                            sc.nextLine(); // clearing buffer
-                        }
-                        oChoice = sc.nextInt();
-                        sc.nextLine();
-                        displayDottedLine();
-                        if(oChoice < 1 || oChoice > 4)
-                            System.out.println("Invalid choice, Try again.");
-                     }   while (oChoice < 1 || oChoice > 4 );
-                    oChoice--;
-                    System.out.println("Current option : " + options.get(oChoice) ) ;
-                    options.set(oChoice , updateSpecificOption(oChoice));
+                    updateSpecificOptionMenu(options);
                     break;
                 case 3:
                     System.out.println("Current correct index : " + correctIndex);
@@ -691,7 +684,7 @@ public class Instructor {
                 case 4:
                     break;
                 default:
-                    System.out.println("Invalid choice , Try again.");
+                    displayInvalid();
             }
         }while (choice !=4);
         Question temp = new Question(description , options , correctIndex);
@@ -700,24 +693,46 @@ public class Instructor {
             t.getQuestions().set(qIndex , temp);
         }
     }
+    private void updateSpecificOptionMenu(ArrayList<String> options) {
+        int oChoice;
+        do {
+            System.out.println("Enter the option you want to change ( 1 - 4 ) : ");
+            while (!sc.hasNextInt()) {
+                displayDottedLine();
+                System.out.println("Enter a valid choice ( 1 - 4 ) .");
+                sc.nextLine(); // clearing buffer
+            }
+            oChoice = sc.nextInt();
+            sc.nextLine();
+            displayDottedLine();
+            if(oChoice < 1 || oChoice > 4)
+                displayInvalid();
+        }   while (oChoice < 1 || oChoice > 4 );
+        oChoice--;
+        System.out.println("Current option : " + options.get(oChoice) ) ;
+        options.set(oChoice , updateSpecificOption(oChoice));
+    }
     private String updateSpecificOption(int choice) {
         String tempChoice;
             do {
-                System.out.print("Choice " + (choice+1) + ": ");
+                System.out.print("Enter updated choice  " + (choice+1) + ": ");
                 tempChoice = sc.nextLine();
                 displayDottedLine();
                 if (tempChoice.isEmpty())
-                    System.out.println("Choice field is required");
+                    System.out.println("Field shouldn't be empty!");
             } while (tempChoice.isEmpty());
         return  tempChoice;
     }
     private void displayQuestion(Question q) {
         System.out.println("Description : " + q.getDescription());
+        System.out.println("=============================");
         System.out.println("Options : ");
         for(int i=0 ; i< q.getOptions().size(); i++) {
-            System.out.println(" " +  q.getOptions().get(i));
+            System.out.println(" Option  " + (i+1) + " " +  q.getOptions().get(i));
         }
+        System.out.println("=============================");
         System.out.println("Correct answer index : " + (q.getCorrectAnswerIndex() +1));
+        System.out.println("=============================");
     }
     private void renameTestFile(String oldID, String newID) {
         String oldFilePath = "Data/Tests/" + oldID + ".txt";
@@ -727,31 +742,20 @@ public class Instructor {
         oldFile.renameTo(newFile);
     }
     private void toggleUpdateMenu() {
-
-        System.out.println(" 1 ) Change test ID\n" +
-                " 2 ) Change test Name\n" +
-                " 3 ) Change test password\n" +
-                " 4 ) Set new questions\n" +
-                " 5 ) Save Changes");
+        System.out.println(" 1) Change test ID\n" +
+                " 2) Change test Name\n" +
+                " 3) Change test password\n" +
+                " 4) Set new questions\n" +
+                " 5) Save Changes");
         System.out.print("Enter your choice ( 1 - 5 ) :");
-        while (!sc.hasNextInt()) {
-            displayDottedLine();
-            System.out.println("Enter a valid choice ( 1 - 5 ) .");
-            sc.nextLine(); // clearing buffer
-        }
     }
     private void toggleUpdateQuestionMenu(Test t, int bound) {
         System.out.println("Choose the question you want to update : ");
         for (int i = 0; i < t.getQuestions().size(); i++) {
-            System.out.println((i + 1) + ") " + t.getQuestions().get(i).getDescription());
+            System.out.println(" " + (i + 1) + ") " + t.getQuestions().get(i).getDescription());
         }
-        System.out.println((bound + 1) + ") Go back and save changes");
+        System.out.println(" " + ( bound + 1) + ") Go back and save changes");
         System.out.print("Enter your choice ( 1 - " + bound + " ) :");
-        while (!sc.hasNextInt()) {
-            displayDottedLine();
-            System.out.println("Enter a valid choice ( 1 - " + bound + " ) : ");
-            sc.nextLine(); // clearing buffer
-        }
     }
 
 
@@ -776,4 +780,5 @@ public class Instructor {
     private static void displayDottedLine() {
         System.out.println("********************************************");
     }
+    private static void displayInvalid() { System.out.println("Invalid Choice!...Try Again"); }
 }

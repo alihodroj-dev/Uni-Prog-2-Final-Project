@@ -58,7 +58,7 @@ public class Student {
                             " 4) Take a test\n" +
                             " 5) Change remember me option \n" +
                             " 6) Logout\n" +
-                            "CHOICE (1 - 6): "
+                            "Enter your choice (1 - 6): "
             );
 
             while(!sc.hasNextInt()) {
@@ -92,7 +92,8 @@ public class Student {
                     break;
 
                 default:
-                    System.out.println("Enter a valid option (1 - 6) :.");
+                    displayInvalid();
+                    break;
             }
         } while (choice != 6);
         data.saveData(); // Saving data in case of any changes
@@ -134,11 +135,11 @@ public class Student {
 
                 case 4:
                     System.out.println("Navigating back to main menu...");
-
                     break;
 
                 default:
-                    System.out.println("Enter a valid option (1 - 4) : ");
+                    displayInvalid();
+                    break;
 
             }
         } while (mainChoice != 4);
@@ -165,7 +166,7 @@ public class Student {
                  System.out.print("PASSWORD: ");
                  tPassword = sc.nextLine();
                  if(!t.getTestPassword().equals(tPassword)) {
-                     System.out.print("Enter a valid password : ");
+                     System.out.print("Invalid Password...Try again");
                      attempts--;
                      if(attempts != 0)
                           System.out.println("You have " + attempts + " attempts left");
@@ -228,7 +229,7 @@ public class Student {
             data.getStudents().get(index).username = this.username;
             renameGradeFile(oldUsername, username);
             System.out.println(str + " Name was Successfully Modified");
-            System.out.println("Your new username is : "+ username);
+            System.out.println("Your new USERNAME is (" + this.username + ") Please memorize it");
         }
     }
     private void updatePassword(Data data) {
@@ -414,7 +415,7 @@ public class Student {
                 sc.nextLine();
                 displayDottedLine();
                 if(choice < 1 || choice > 4)
-                    System.out.println("Enter a valid answer : ");
+                    displayInvalid();
             }while (choice < 1 || choice > 4);
             choice--;
 
@@ -463,7 +464,7 @@ public class Student {
     private static void displayDottedLine() {
         System.out.println("********************************************");
     }
-
+    private static void displayInvalid() { System.out.println("Invalid Choice!...Try Again"); }
 
 
 
