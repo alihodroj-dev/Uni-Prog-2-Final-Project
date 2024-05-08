@@ -678,7 +678,7 @@ public class Instructor {
                     updateSpecificOptionMenu(options);
                     break;
                 case 3:
-                    System.out.println("Current correct index : " + correctIndex);
+                    System.out.println("Current correct index : " + (correctIndex+1));
                     correctIndex = setCorrectAnswer();
                     break;
                 case 4:
@@ -728,7 +728,7 @@ public class Instructor {
         System.out.println("=============================");
         System.out.println("Options : ");
         for(int i=0 ; i< q.getOptions().size(); i++) {
-            System.out.println(" Option  " + (i+1) + " " +  q.getOptions().get(i));
+            System.out.println(" Option " + (i+1) + " : " +  q.getOptions().get(i));
         }
         System.out.println("=============================");
         System.out.println("Correct answer index : " + (q.getCorrectAnswerIndex() +1));
@@ -747,7 +747,7 @@ public class Instructor {
                 " 3) Change test password\n" +
                 " 4) Set new questions\n" +
                 " 5) Save Changes");
-        System.out.print("Enter your choice ( 1 - 5 ) :");
+        System.out.print("Enter your choice ( 1 - 5 ) : ");
     }
     private void toggleUpdateQuestionMenu(Test t, int bound) {
         System.out.println("Choose the question you want to update : ");
@@ -755,7 +755,7 @@ public class Instructor {
             System.out.println(" " + (i + 1) + ") " + t.getQuestions().get(i).getDescription());
         }
         System.out.println(" " + ( bound + 1) + ") Go back and save changes");
-        System.out.print("Enter your choice ( 1 - " + bound + " ) :");
+        System.out.print("Enter your choice ( 1 - " + bound + " ) : ");
     }
 
 
