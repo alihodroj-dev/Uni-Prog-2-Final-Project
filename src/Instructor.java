@@ -160,7 +160,7 @@ public class Instructor {
         String tPassword;
         String tName;
         do {
-            System.out.print("Enter test ID : ");
+            System.out.print("Enter new test ID : ");
             tID = sc.nextLine();
             displayDottedLine();
         }while (!isTestAvailable(tID , data));

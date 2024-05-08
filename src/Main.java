@@ -15,13 +15,6 @@ public class Main {
             displayMainMenu(mainDataModel);
         }
     }
-    private static void checkIfInt(Scanner sc) {
-        while(!sc.hasNextInt() ) {
-            sc.nextLine();
-            displayDottedLine();
-            System.out.print("Invalid choice , enter again : ");
-        }
-    }
     private static void displayDottedLine() {
         System.out.println("********************************************");
     }
@@ -101,7 +94,7 @@ public class Main {
                     int input3 = 0;
                     // display message
                     displayDottedLine();
-                    System.out.println("Choose the type of account your want to create: \n 1) Student \n 2) Instructor \n 3) Back");
+                    System.out.println("Choose the type of account you want to create: \n 1) Student \n 2) Instructor \n 3) Back");
                     System.out.print("CHOICE (1 - 3): ");
                     // taking input3
                     // handling invalid input
@@ -146,5 +139,12 @@ public class Main {
                     break;
             }
         } while(input != 3);
+    }
+    private static void checkIfInt(Scanner sc) {
+        while(!sc.hasNextInt() ) {
+            sc.nextLine();
+            displayDottedLine();
+            System.out.print("Invalid choice , enter again : ");
+        }
     }
 }
