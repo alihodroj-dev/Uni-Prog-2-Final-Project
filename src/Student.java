@@ -467,14 +467,4 @@ public class Student {
     private static void displayInvalid() { System.out.println("Invalid Choice!...Try Again"); }
 
 
-
-
-
-    @Override
-    public String toString() {
-        String[] temp = this.username.split("_");
-        return "ROLE: STUDENT\n" +
-                "NAME: " + temp[0].toUpperCase() + " " + temp[1].toUpperCase() + "\n";
-    }
-
 }
