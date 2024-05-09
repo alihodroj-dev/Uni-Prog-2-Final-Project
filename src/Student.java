@@ -150,7 +150,7 @@ public class Student {
 
     // TEST TAKER MENU
 
-    public void takeTest(Data data) {
+    private void takeTest(Data data) {
          String tID , tPassword;
          System.out.println("You are about to take a test....");
          do {

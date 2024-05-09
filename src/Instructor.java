@@ -673,13 +673,15 @@ public class Instructor {
                 case 1:
                     System.out.println("Current description : " + description);
                     description = setQuestionDescription();
+                    System.out.println("Description updated successfully");
                     break;
                 case 2:
                     updateSpecificOptionMenu(options);
                     break;
                 case 3:
-                    System.out.println("Current correct index : " + (correctIndex+1));
+                    System.out.println("Current correct answer : " + (correctIndex+1));
                     correctIndex = setCorrectAnswer();
+                    System.out.println("Correct answer updated successfully");
                     break;
                 case 4:
                     break;
@@ -721,6 +723,7 @@ public class Instructor {
                 if (tempChoice.isEmpty())
                     System.out.println("Field shouldn't be empty!");
             } while (tempChoice.isEmpty());
+        System.out.println("Choice updated successfully");
         return  tempChoice;
     }
     private void displayQuestion(Question q) {
