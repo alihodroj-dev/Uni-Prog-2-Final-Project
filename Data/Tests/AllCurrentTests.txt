@@ -1,1 +1,3 @@
-1212;testpass;quiz;Q
+1818;testpass;Programming Quiz;Q
+1919;testpass;Programming Midterm;M
+2020;testpass;Programming Final;F

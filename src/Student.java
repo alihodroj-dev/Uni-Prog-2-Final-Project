@@ -335,7 +335,11 @@ public class Student {
     }
     private  void displayAcademicRecords(Data data) {
         String tempTitle="";
-        System.out.println("Displaying All Taken tests...\n");
+        if (!this.grades.isEmpty()) {
+            System.out.println("Displaying All Taken tests...");
+        } else {
+            System.out.println("No test taken yet.");
+        }
         for (StudentGrade grade : grades) {
             for (Test t : data.getTests()) {
                 if (grade.getTestId().equalsIgnoreCase(t.getTestId())) {
