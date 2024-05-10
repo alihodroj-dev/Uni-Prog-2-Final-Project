@@ -105,9 +105,9 @@ public abstract class Authentication {
         String lname = "";
         String passwordInput = "";
         String confirmPasswordInput = "";
-        int attempts = 3;
         // main loop
         do {
+            int attempts = 3;
             // display message
             // taking first name
             System.out.println("Creating a STUDENT ACCOUNT");
@@ -186,9 +186,9 @@ public abstract class Authentication {
         String lname = "";
         String passwordInput = "";
         String confirmPasswordInput = "";
-        int attempts = 3;
         // main loop
         do {
+            int attempts = 3;
             // display message
             // taking first name
             System.out.println("Creating an INSTRUCTOR ACCOUNT");
